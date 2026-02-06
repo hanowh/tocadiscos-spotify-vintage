@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticando...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+        .loading {
+            text-align: center;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff0000;
+            max-width: 400px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <div class="spinner"></div>
+        <h2>Autenticando con Spotify...</h2>
+        <p>Serás redirigido en un momento</p>
+    </div>
+
+    <script>
+        // Parse the hash fragment to get access token
+        function getHashParams() {
+            const hash = window.location.hash.substring(1);
+            const params = {};
+            hash.split('&').forEach(part => {
+                const [key, value] = part.split('=');
+                params[key] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        // Handle the OAuth callback
+        function handleCallback() {
+            const params = getHashParams();
+
+            if (params.access_token) {
+                // Store the access token
+                sessionStorage.setItem('spotify_access_token', params.access_token);
+
+                // Store token expiration time
+                const expiresIn = parseInt(params.expires_in) || 3600;
+                const expirationTime = Date.now() + (expiresIn * 1000);
+                sessionStorage.setItem('spotify_token_expiration', expirationTime);
+
+                // Redirect to player
+                window.location.href = 'player.html';
+            } else if (params.error) {
+                // Handle error
+                document.querySelector('.loading').innerHTML = `
+                    <div class="error">
+                        <h2>Error de autenticación</h2>
+                        <p>${params.error}</p>
+                        <p><a href="index.html" style="color: white;">Volver al inicio</a></p>
+                    </div>
+                `;
+            } else {
+                // No token and no error - something went wrong
+                document.querySelector('.loading').innerHTML = `
+                    <div class="error">
+                        <h2>Error desconocido</h2>
+                        <p>No se recibió token de acceso.</p>
+                        <p><a href="index.html" style="color: white;">Volver al inicio</a></p>
+                    </div>
+                `;
+            }
+        }
+
+        // Run on page load
+        handleCallback();
+    </script>
+</body>
+</html>

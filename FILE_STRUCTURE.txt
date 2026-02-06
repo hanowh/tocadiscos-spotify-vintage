@@ -1,0 +1,157 @@
+TOCADISCOS-SPOTIFY - FILE STRUCTURE
+================================================================================
+
+tocadiscos-spotify/
+│
+├── 📄 index.html                    Landing page with Spotify login
+├── 📄 player.html                   Main turntable application
+├── 📄 callback.html                 OAuth callback handler
+├── 📄 test.html                     Configuration test page
+│
+├── 📁 css/
+│   ├── auth.css                    Login page styles
+│   └── styles.css                  Main application styles
+│
+├── 📁 js/
+│   ├── config.js                   Configuration (CLIENT_ID, settings)
+│   ├── app.js                      Main application coordinator
+│   ├── turntable.js                Vinyl record logic & animation
+│   ├── tonearm.js                  Interactive tonearm control
+│   ├── visualizer.js               Audio visualizer (Canvas)
+│   ├── playlist.js                 Playlist management
+│   │
+│   └── 📁 spotify/
+│       ├── auth.js                 OAuth 2.0 authentication
+│       ├── api.js                  Spotify Web API wrapper
+│       └── player.js               Web Playback SDK wrapper
+│
+├── 📁 assets/
+│   ├── 📁 sounds/                   (Future: audio effects)
+│   └── 📁 images/                   (Future: textures)
+│
+├── 📚 README.md                     Complete documentation
+├── 📚 QUICK_START.md                Quick start guide (5 steps)
+├── 📚 SETUP_CHECKLIST.md            Detailed setup checklist
+├── 📚 ARCHITECTURE.md               Technical architecture docs
+├── 📚 PROJECT_SUMMARY.md            Implementation summary
+├── 📚 FILE_STRUCTURE.txt            This file
+│
+├── 🐍 server.py                     Development server (Python)
+├── 📝 .gitignore                    Git ignore rules
+├── 📜 LICENSE                       MIT License
+└── 📊 TREE.txt                      File tree
+
+================================================================================
+STATISTICS
+================================================================================
+
+Total Files:        23 files
+Project Size:       ~185 KB
+Code Files:         15 files
+  - HTML:           4 files
+  - CSS:            2 files
+  - JavaScript:     9 files
+Documentation:      6 files
+Other:             2 files
+
+Lines of Code:      ~4,400 lines
+  - JavaScript:     ~2,500 lines
+  - CSS:            ~800 lines
+  - HTML:           ~600 lines
+  - Docs:           ~1,500 lines
+
+================================================================================
+KEY FILES
+================================================================================
+
+🔑 MUST CONFIGURE:
+  js/config.js              ← Add your Spotify CLIENT_ID here!
+
+📖 READ FIRST:
+  QUICK_START.md            ← 5-step quick start guide
+  README.md                 ← Complete documentation
+
+🧪 TEST:
+  test.html                 ← Verify configuration
+
+🚀 RUN:
+  server.py                 ← Start development server
+  index.html                ← Open in browser
+
+================================================================================
+ENTRY POINTS
+================================================================================
+
+Development:
+  1. python server.py                     → Start server
+  2. http://localhost:8080/test.html      → Verify setup
+  3. http://localhost:8080/index.html     → Use app
+
+Production:
+  - Deploy all files to static hosting
+  - Update REDIRECT_URI in config.js
+  - Add production URL to Spotify Dashboard
+
+================================================================================
+MODULE DEPENDENCIES
+================================================================================
+
+app.js
+  ├── spotify/auth.js
+  ├── spotify/api.js
+  ├── spotify/player.js
+  ├── turntable.js
+  ├── tonearm.js
+  ├── visualizer.js
+  └── playlist.js
+
+All modules depend on:
+  └── config.js
+
+================================================================================
+FLOW
+================================================================================
+
+User Journey:
+  index.html → Spotify Auth → callback.html → player.html
+
+File Loading Order (player.html):
+  1. config.js
+  2. spotify/auth.js
+  3. spotify/api.js
+  4. spotify/player.js
+  5. visualizer.js
+  6. turntable.js
+  7. tonearm.js
+  8. playlist.js
+  9. app.js (initializes everything)
+
+================================================================================
+CUSTOMIZATION
+================================================================================
+
+Want to customize?
+  - Colors:         js/config.js → COLORS
+  - Track count:    js/config.js → MAX_TRACKS
+  - Arm angles:     js/config.js → ARM_MIN/MAX_ANGLE
+  - Playlist:       js/config.js → DEFAULT_PLAYLIST_ID
+  - Styles:         css/styles.css
+  - Visualizer:     js/visualizer.js
+
+================================================================================
+HELP
+================================================================================
+
+Problems?
+  1. Check test.html for configuration issues
+  2. Read troubleshooting in README.md
+  3. Verify QUICK_START.md steps
+  4. Check browser console (F12)
+
+Documentation:
+  - QUICK_START.md      → Fast setup
+  - README.md           → Full guide
+  - ARCHITECTURE.md     → Technical details
+  - SETUP_CHECKLIST.md  → Step-by-step checklist
+
+================================================================================
