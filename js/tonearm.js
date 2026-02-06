@@ -16,8 +16,11 @@ class Tonearm {
         this.tracks = [];
 
         // Pivot point (relative to turntable wrapper)
-        this.pivotX = 350; // X position of arm base
-        this.pivotY = 80;  // Y position of arm base
+        // tonearm is at left: 370px, top: 75px
+        // arm-base is at left: 10px, top: 10px (inside tonearm)
+        // arm-base center: + 20px (half of 40px)
+        this.pivotX = 400; // 370 + 10 + 20
+        this.pivotY = 105; // 75 + 10 + 20
 
         // Callbacks
         this.onTrackChange = null;

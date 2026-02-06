@@ -153,10 +153,29 @@ class LocalMusicPlayer {
         // Stop current playback
         this.stop();
 
+        // Resume AudioContext if suspended
+        if (this.audioContext && this.audioContext.state === 'suspended') {
+            console.log('Resuming AudioContext...');
+            await this.audioContext.resume();
+            console.log('AudioContext state:', this.audioContext.state);
+        }
+
+        // Disconnect previous source if exists
+        if (this.sourceNode) {
+            try {
+                this.sourceNode.disconnect();
+            } catch (e) {
+                console.warn('Error disconnecting source:', e);
+            }
+            this.sourceNode = null;
+        }
+
         // Create new audio element
         this.currentAudio = new Audio(track.url);
-        this.currentAudio.crossOrigin = 'anonymous';
         this.currentTrackIndex = index;
+
+        // Set volume
+        this.currentAudio.volume = this.gainNode ? this.gainNode.gain.value : 0.5;
 
         // Setup event listeners
         this.currentAudio.addEventListener('ended', () => {
@@ -173,17 +192,40 @@ class LocalMusicPlayer {
             if (this.onError) this.onError(e);
         });
 
+        this.currentAudio.addEventListener('loadedmetadata', () => {
+            console.log('Audio loaded, duration:', this.currentAudio.duration);
+        });
+
+        this.currentAudio.addEventListener('canplay', () => {
+            console.log('Audio can play');
+        });
+
         // Connect to Web Audio API for visualization
-        if (!this.sourceNode && this.audioContext) {
-            this.sourceNode = this.audioContext.createMediaElementSource(this.currentAudio);
-            this.sourceNode.connect(this.gainNode);
+        if (this.audioContext) {
+            try {
+                this.sourceNode = this.audioContext.createMediaElementSource(this.currentAudio);
+                this.sourceNode.connect(this.gainNode);
+                console.log('Audio connected to Web Audio API');
+            } catch (error) {
+                console.error('Error connecting to Web Audio API:', error);
+            }
         }
 
         // Play
         try {
+            console.log('Attempting to play track:', track.name);
+            console.log('AudioContext state before play:', this.audioContext?.state);
+
             await this.currentAudio.play();
+
+            console.log('Play() called successfully');
+            console.log('Audio paused?', this.currentAudio.paused);
+            console.log('Audio currentTime:', this.currentAudio.currentTime);
+            console.log('Audio duration:', this.currentAudio.duration);
+
             this.isPlaying = true;
             this.notifyStateChange();
+            console.log('Track playing successfully');
         } catch (error) {
             console.error('Error playing track:', error);
             if (this.onError) this.onError(error);
@@ -194,11 +236,18 @@ class LocalMusicPlayer {
      * Resume playback
      */
     async play() {
+        // Resume AudioContext if suspended
+        if (this.audioContext && this.audioContext.state === 'suspended') {
+            console.log('Resuming AudioContext...');
+            await this.audioContext.resume();
+        }
+
         if (this.currentAudio && this.currentAudio.paused) {
             try {
                 await this.currentAudio.play();
                 this.isPlaying = true;
                 this.notifyStateChange();
+                console.log('Playback resumed');
             } catch (error) {
                 console.error('Error resuming playback:', error);
             }
@@ -223,6 +272,7 @@ class LocalMusicPlayer {
         if (this.currentAudio) {
             this.currentAudio.pause();
             this.currentAudio.currentTime = 0;
+            // Don't destroy audio element, just pause it
             this.isPlaying = false;
             this.notifyStateChange();
         }

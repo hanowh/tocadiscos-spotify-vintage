@@ -4,7 +4,9 @@
       "Bash(npx serve:*)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(cmd //c \"taskkill /PID 7348 /F\")"
+      "Bash(cmd //c \"taskkill /PID 7348 /F\")",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ]
   }
 }

@@ -102,8 +102,17 @@ class ModeManager {
             // Show loading state
             this.localFileCount.textContent = 'Cargando archivos...';
 
+            console.log('Loading', files.length, 'files...');
+
             // Load files
             await localPlayer.loadFiles(files);
+
+            console.log('Files loaded:', localPlayer.getPlaylist().length);
+
+            // Switch to local mode if not already
+            if (this.currentMode !== 'local') {
+                this.switchMode('local');
+            }
 
             // Update UI
             this.updateLocalFileCount();
@@ -113,13 +122,15 @@ class ModeManager {
                 this.clearLocalFilesBtn.style.display = 'flex';
             }
 
-            // Notify app to update track list
+            // Notify app to update track list (force refresh)
             if (this.onModeChange) {
-                this.onModeChange(this.currentMode, this.currentMode);
+                this.onModeChange('local', 'local');
             }
 
             // Clear input
             this.localFilesInput.value = '';
+
+            console.log('Local files ready to play');
         } catch (error) {
             console.error('Error loading local files:', error);
             this.localFileCount.textContent = 'Error al cargar archivos';

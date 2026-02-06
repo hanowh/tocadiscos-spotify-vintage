@@ -218,7 +218,7 @@ class TurntableApp {
             this.handlePlaylistChange(localPlaylist);
         } else if (newMode === 'spotify') {
             // Reload Spotify playlist if available
-            const spotifyTracks = playlistManager.getCurrentPlaylist();
+            const spotifyTracks = playlistManager.getTracks();
             if (spotifyTracks && spotifyTracks.length > 0) {
                 this.handlePlaylistChange(spotifyTracks);
             }
